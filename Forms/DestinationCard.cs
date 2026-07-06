@@ -1,4 +1,5 @@
 using System.Drawing.Drawing2D;
+using DataBackupTool.Controls;
 using DataBackupTool.Models;
 
 namespace DataBackupTool.Forms
@@ -20,7 +21,7 @@ namespace DataBackupTool.Forms
         public DestinationCard(BackupDestination destination)
         {
             Destination = destination;
-            Size = new Size(212, 190);
+            Size = new Size(212, 196);
             Margin = new Padding(6);
             BackColor = CardBg;
             DoubleBuffered = true;
@@ -118,12 +119,11 @@ namespace DataBackupTool.Forms
 
             var separator = new Panel { BackColor = BorderColor, Height = 1, Location = new Point(14, 110), Size = new Size(184, 1) };
 
-            var buttonRun = MakeButton("Chạy", new Point(14, 122), 56);
+            var buttonRun = MakeButton("Chạy", new Point(14, 122), 56, ButtonVariant.Primary);
             buttonRun.Click += (_, _) => RunClicked?.Invoke(Destination);
-            var buttonEdit = MakeButton("Sửa", new Point(76, 122), 56);
+            var buttonEdit = MakeButton("Sửa", new Point(76, 122), 56, ButtonVariant.Secondary);
             buttonEdit.Click += (_, _) => EditClicked?.Invoke(Destination);
-            var buttonDelete = MakeButton("Xóa", new Point(138, 122), 60);
-            buttonDelete.ForeColor = Color.FromArgb(163, 45, 45);
+            var buttonDelete = MakeButton("Xóa", new Point(138, 122), 60, ButtonVariant.Danger);
             buttonDelete.Click += (_, _) => DeleteClicked?.Invoke(Destination);
 
             Controls.Add(iconBox);
@@ -138,22 +138,15 @@ namespace DataBackupTool.Forms
             Controls.Add(buttonDelete);
         }
 
-        private Button MakeButton(string text, Point location, int width)
+        private RoundedButton MakeButton(string text, Point location, int width, ButtonVariant variant = ButtonVariant.Secondary)
         {
-            var btn = new Button
+            return new RoundedButton
             {
                 Text = text,
                 Location = location,
-                Size = new Size(width, 26),
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 8f),
-                BackColor = Color.White,
-                ForeColor = TextPrimary,
-                Cursor = Cursors.Hand
+                Size = new Size(width, 28),
+                Variant = variant
             };
-            btn.FlatAppearance.BorderColor = BorderColor;
-            btn.FlatAppearance.BorderSize = 1;
-            return btn;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace DataBackupTool.Forms
         private readonly SchedulerService _scheduler;
         private readonly RealtimeWatcherService _realtimeWatcher;
         private readonly NotifyIcon _notifyIcon = new();
+        private readonly StartupService _startupService = new();
 
         public MainForm(SchedulerService scheduler, RealtimeWatcherService realtimeWatcher)
         {
@@ -17,6 +18,9 @@ namespace DataBackupTool.Forms
             _realtimeWatcher = realtimeWatcher;
             InitializeNotifyIcon();
             _realtimeWatcher.BackupCompleted += OnRealtimeBackupCompleted;
+            checkBoxStartWithWindows.Checked = _startupService.IsEnabled();
+            checkBoxStartWithWindows.CheckedChanged += (_, _) =>
+                _startupService.SetEnabled(checkBoxStartWithWindows.Checked);
             LoadDestinations();
         }
 
@@ -125,6 +129,11 @@ namespace DataBackupTool.Forms
         {
             Hide();
             _notifyIcon.Visible = true;
+        }
+
+        public void StartHidden()
+        {
+            HideWindow();
         }
     }
 }

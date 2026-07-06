@@ -1,3 +1,5 @@
+using DataBackupTool.Controls;
+
 namespace DataBackupTool.Forms
 {
     partial class MainForm
@@ -37,31 +39,33 @@ namespace DataBackupTool.Forms
                 Padding = new Padding(0, 0, 0, 12)
             };
 
-            this.buttonAddDestination = new Button
+            this.checkBoxStartWithWindows = new CheckBox
+            {
+                Text = "Khởi động cùng Windows",
+                AutoSize = true,
+                Margin = new Padding(16, 8, 0, 0)
+            };
+
+            this.buttonAddDestination = new RoundedButton
             {
                 Text = "+  Thêm destination",
-                AutoSize = true,
-                FlatStyle = FlatStyle.Flat,
-                BackColor = System.Drawing.Color.FromArgb(44, 44, 42),
-                ForeColor = System.Drawing.Color.White,
-                Margin = new Padding(0, 0, 8, 0),
-                Padding = new Padding(6, 2, 6, 2)
+                Size = new Size(150, 34),
+                Variant = ButtonVariant.Primary,
+                Margin = new Padding(0, 0, 8, 0)
             };
-            this.buttonAddDestination.FlatAppearance.BorderSize = 0;
             this.buttonAddDestination.Click += buttonAddDestination_Click;
 
-            this.buttonViewLogs = new Button
+            this.buttonViewLogs = new RoundedButton
             {
                 Text = "Xem log",
-                AutoSize = true,
-                FlatStyle = FlatStyle.Flat,
-                Padding = new Padding(6, 2, 6, 2)
+                Size = new Size(90, 34),
+                Variant = ButtonVariant.Secondary
             };
-            this.buttonViewLogs.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(224, 222, 217);
             this.buttonViewLogs.Click += buttonViewLogs_Click;
 
             buttonPanel.Controls.Add(this.buttonAddDestination);
             buttonPanel.Controls.Add(this.buttonViewLogs);
+            buttonPanel.Controls.Add(this.checkBoxStartWithWindows);
 
             this.flowLayoutPanelCards = new FlowLayoutPanel
             {
@@ -75,8 +79,9 @@ namespace DataBackupTool.Forms
             this.Controls.Add(layout);
         }
 
-        private Button buttonAddDestination = null!;
-        private Button buttonViewLogs = null!;
+        private RoundedButton buttonAddDestination = null!;
+        private RoundedButton buttonViewLogs = null!;
+        private CheckBox checkBoxStartWithWindows = null!;
         private FlowLayoutPanel flowLayoutPanelCards = null!;
     }
 }
