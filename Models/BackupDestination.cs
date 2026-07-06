@@ -16,5 +16,6 @@ namespace DataBackupTool.Models
         public List<string> ExcludePatterns { get; set; } = new() { "*.tmp", "node_modules" };
         public bool IsScheduleEnabled { get; set; } = false;
         public string ScheduleTime { get; set; } = "22:00";
+        public bool IsRealtimeEnabled { get; set; } = false;
     }
 }

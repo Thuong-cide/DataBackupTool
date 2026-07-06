@@ -7,12 +7,14 @@ namespace DataBackupTool.Forms
     {
         private readonly ConfigService _configService = new();
         private readonly SchedulerService _scheduler;
+        private readonly RealtimeWatcherService _realtimeWatcher;
         private readonly NotifyIcon _notifyIcon = new();
 
-        public MainForm(SchedulerService scheduler)
+        public MainForm(SchedulerService scheduler, RealtimeWatcherService realtimeWatcher)
         {
             InitializeComponent();
             _scheduler = scheduler;
+            _realtimeWatcher = realtimeWatcher;
             InitializeNotifyIcon();
             LoadDestinations();
         }
@@ -48,6 +50,7 @@ namespace DataBackupTool.Forms
             if (form.ShowDialog(this) == DialogResult.OK)
             {
                 _configService.AddDestination(form.Destination);
+                _realtimeWatcher.StartWatching(_configService.GetAllDestinations());
                 LoadDestinations();
             }
         }

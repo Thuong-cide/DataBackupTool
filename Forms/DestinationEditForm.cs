@@ -55,7 +55,8 @@ namespace DataBackupTool.Forms
                 Mode = (BackupMode)comboBoxMode.SelectedItem!,
                 SourcePaths = listBoxSources.Items.Cast<string>().ToList(),
                 IsScheduleEnabled = checkBoxSchedule.Checked,
-                ScheduleTime = textBoxScheduleTime.Text
+                ScheduleTime = textBoxScheduleTime.Text,
+                IsRealtimeEnabled = checkBoxRealtime.Checked
             };
 
             DialogResult = DialogResult.OK;

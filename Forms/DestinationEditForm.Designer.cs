@@ -54,7 +54,11 @@ namespace DataBackupTool.Forms
             formLayout.Controls.Add(sourcePanel, 1, 3);
 
             this.checkBoxSchedule = new CheckBox { Text = "Bật lịch tự động", AutoSize = true };
-            formLayout.Controls.Add(this.checkBoxSchedule, 1, 4);
+            this.checkBoxRealtime = new CheckBox { Text = "Bật quét realtime", AutoSize = true };
+            var schedulePanel = new FlowLayoutPanel { AutoSize = true, FlowDirection = FlowDirection.TopDown };
+            schedulePanel.Controls.Add(this.checkBoxSchedule);
+            schedulePanel.Controls.Add(this.checkBoxRealtime);
+            formLayout.Controls.Add(schedulePanel, 1, 4);
 
             formLayout.Controls.Add(new Label { Text = "Giờ", AutoSize = true, Margin = new Padding(0, 0, 8, 6) }, 0, 5);
             this.textBoxScheduleTime = new MaskedTextBox { Mask = "00:00", Width = 80 };
@@ -76,6 +80,7 @@ namespace DataBackupTool.Forms
         private Button buttonAddSource = null!;
         private Button buttonRemoveSource = null!;
         private CheckBox checkBoxSchedule = null!;
+        private CheckBox checkBoxRealtime = null!;
         private MaskedTextBox textBoxScheduleTime = null!;
         private Button buttonSave = null!;
     }

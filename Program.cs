@@ -9,7 +9,10 @@ internal static class Program
     static void Main()
     {
         ApplicationConfiguration.Initialize();
+        var configService = new ConfigService();
         var scheduler = new SchedulerService();
-        Application.Run(new MainForm(scheduler));
+        var realtimeWatcher = new RealtimeWatcherService();
+        realtimeWatcher.StartWatching(configService.GetAllDestinations());
+        Application.Run(new MainForm(scheduler, realtimeWatcher));
     }
 }
