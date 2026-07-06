@@ -10,7 +10,9 @@ namespace DataBackupTool.Services
         private readonly Dictionary<string, SemaphoreSlim> _runningLocks = new();
         private readonly BackupService _backupService = new();
         private readonly SyncService _syncService = new();
-        private const int DebounceMilliseconds = 30000;
+        private const int DebounceMilliseconds = 5000;
+
+        public event Action<string, BackupResult>? BackupCompleted;
 
         public void StartWatching(List<BackupDestination> destinations)
         {
@@ -83,6 +85,7 @@ namespace DataBackupTool.Services
                     : _backupService.RunBackup(destination);
 
                 WriteLog($"[Realtime] [{destination.Name}] Copied: {result.FilesCopied}, Skipped: {result.FilesSkipped}, Errors: {result.Errors.Count}");
+                BackupCompleted?.Invoke(destination.Name, result);
             }
             catch (Exception ex)
             {

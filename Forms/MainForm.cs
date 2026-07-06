@@ -16,6 +16,7 @@ namespace DataBackupTool.Forms
             _scheduler = scheduler;
             _realtimeWatcher = realtimeWatcher;
             InitializeNotifyIcon();
+            _realtimeWatcher.BackupCompleted += OnRealtimeBackupCompleted;
             LoadDestinations();
         }
 
@@ -25,6 +26,22 @@ namespace DataBackupTool.Forms
             _notifyIcon.Text = "Data Backup Tool";
             _notifyIcon.Visible = false;
             _notifyIcon.Click += (_, _) => ShowWindow();
+        }
+
+        private void OnRealtimeBackupCompleted(string destinationName, BackupResult result)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => OnRealtimeBackupCompleted(destinationName, result)));
+                return;
+            }
+
+            _notifyIcon.Visible = true;
+            _notifyIcon.BalloonTipTitle = $"Đã tự động backup: {destinationName}";
+            _notifyIcon.BalloonTipText = $"Copy: {result.FilesCopied}, Bỏ qua: {result.FilesSkipped}, Lỗi: {result.Errors.Count}";
+            _notifyIcon.ShowBalloonTip(3000);
+
+            LoadDestinations();
         }
 
         private void LoadDestinations()
