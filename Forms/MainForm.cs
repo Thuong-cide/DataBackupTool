@@ -55,6 +55,48 @@ namespace DataBackupTool.Forms
             }
         }
 
+        private void buttonEditDestination_Click(object sender, EventArgs e)
+        {
+            if (dataGridViewDestinations.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(this, "Vui lòng chọn một destination để sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var selectedId = dataGridViewDestinations.SelectedRows[0].Cells[0].Value?.ToString();
+            var destination = _configService.GetAllDestinations().FirstOrDefault(d => d.Id == selectedId);
+            if (destination == null) return;
+
+            using var form = new DestinationEditForm(destination);
+            if (form.ShowDialog(this) == DialogResult.OK)
+            {
+                _configService.UpdateDestination(form.Destination);
+                _realtimeWatcher.StartWatching(_configService.GetAllDestinations());
+                LoadDestinations();
+            }
+        }
+
+        private void buttonDeleteDestination_Click(object sender, EventArgs e)
+        {
+            if (dataGridViewDestinations.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(this, "Vui lòng chọn một destination để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var selectedId = dataGridViewDestinations.SelectedRows[0].Cells[0].Value?.ToString();
+            var name = dataGridViewDestinations.SelectedRows[0].Cells[1].Value?.ToString();
+
+            var confirm = MessageBox.Show(this, $"Xóa destination \"{name}\"? Hành động này không thể hoàn tác.",
+                "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes || selectedId == null) return;
+
+            _configService.RemoveDestination(selectedId);
+            _realtimeWatcher.StartWatching(_configService.GetAllDestinations());
+            LoadDestinations();
+        }
+
         private void buttonRunSelected_Click(object sender, EventArgs e)
         {
             if (dataGridViewDestinations.SelectedRows.Count == 0)
@@ -72,6 +114,18 @@ namespace DataBackupTool.Forms
 
             _scheduler.RunNow(destination);
             MessageBox.Show(this, "Đã chạy backup/sync cho destination đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void buttonViewLogs_Click(object sender, EventArgs e)
+        {
+            using var form = new LogViewerForm();
+            form.ShowDialog(this);
+        }
+
+        private void dataGridViewDestinations_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            buttonEditDestination_Click(sender, EventArgs.Empty);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

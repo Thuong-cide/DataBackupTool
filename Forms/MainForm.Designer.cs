@@ -38,11 +38,20 @@ namespace DataBackupTool.Forms
 
             this.buttonAddDestination = new Button { Text = "Thêm Destination", AutoSize = true, Margin = new Padding(0, 0, 8, 0) };
             this.buttonAddDestination.Click += buttonAddDestination_Click;
-            this.buttonRunSelected = new Button { Text = "Chạy ngay", AutoSize = true };
+            this.buttonEditDestination = new Button { Text = "Sửa", AutoSize = true, Margin = new Padding(0, 0, 8, 0) };
+            this.buttonEditDestination.Click += buttonEditDestination_Click;
+            this.buttonDeleteDestination = new Button { Text = "Xóa", AutoSize = true, Margin = new Padding(0, 0, 8, 0) };
+            this.buttonDeleteDestination.Click += buttonDeleteDestination_Click;
+            this.buttonRunSelected = new Button { Text = "Chạy ngay", AutoSize = true, Margin = new Padding(0, 0, 8, 0) };
             this.buttonRunSelected.Click += buttonRunSelected_Click;
+            this.buttonViewLogs = new Button { Text = "Xem Log", AutoSize = true };
+            this.buttonViewLogs.Click += buttonViewLogs_Click;
 
             buttonPanel.Controls.Add(this.buttonAddDestination);
+            buttonPanel.Controls.Add(this.buttonEditDestination);
+            buttonPanel.Controls.Add(this.buttonDeleteDestination);
             buttonPanel.Controls.Add(this.buttonRunSelected);
+            buttonPanel.Controls.Add(this.buttonViewLogs);
 
             this.dataGridViewDestinations = new DataGridView
             {
@@ -54,6 +63,7 @@ namespace DataBackupTool.Forms
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false
             };
+            this.dataGridViewDestinations.CellDoubleClick += dataGridViewDestinations_CellDoubleClick;
 
             this.dataGridViewDestinations.Columns.Add("Id", "Id");
             this.dataGridViewDestinations.Columns.Add("Name", "Tên");
@@ -68,7 +78,10 @@ namespace DataBackupTool.Forms
         }
 
         private Button buttonAddDestination = null!;
+        private Button buttonEditDestination = null!;
+        private Button buttonDeleteDestination = null!;
         private Button buttonRunSelected = null!;
+        private Button buttonViewLogs = null!;
         private DataGridView dataGridViewDestinations = null!;
     }
 }

@@ -6,11 +6,28 @@ namespace DataBackupTool.Forms
     {
         public BackupDestination Destination { get; private set; } = new();
 
-        public DestinationEditForm()
+        public DestinationEditForm() : this(null) { }
+
+        public DestinationEditForm(BackupDestination? existing)
         {
             InitializeComponent();
             comboBoxMode.Items.AddRange(new object[] { BackupMode.Backup, BackupMode.Sync });
-            comboBoxMode.SelectedIndex = 0;
+
+            if (existing != null)
+            {
+                Destination = existing;
+                textBoxName.Text = existing.Name;
+                textBoxDestinationPath.Text = existing.DestinationPath;
+                comboBoxMode.SelectedItem = existing.Mode;
+                listBoxSources.Items.AddRange(existing.SourcePaths.ToArray());
+                checkBoxSchedule.Checked = existing.IsScheduleEnabled;
+                checkBoxRealtime.Checked = existing.IsRealtimeEnabled;
+                textBoxScheduleTime.Text = existing.ScheduleTime;
+            }
+            else
+            {
+                comboBoxMode.SelectedIndex = 0;
+            }
         }
 
         private void buttonBrowseDestination_Click(object sender, EventArgs e)
@@ -48,8 +65,10 @@ namespace DataBackupTool.Forms
                 return;
             }
 
+            var id = Destination.Id;
             Destination = new BackupDestination
             {
+                Id = id,
                 Name = textBoxName.Text,
                 DestinationPath = textBoxDestinationPath.Text,
                 Mode = (BackupMode)comboBoxMode.SelectedItem!,
