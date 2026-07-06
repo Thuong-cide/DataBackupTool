@@ -17,14 +17,15 @@ namespace DataBackupTool.Forms
         {
             this.components = new System.ComponentModel.Container();
             this.Text = "Data Backup Tool";
-            this.Size = new System.Drawing.Size(900, 500);
+            this.Size = new System.Drawing.Size(920, 560);
+            this.BackColor = System.Drawing.Color.FromArgb(245, 245, 243);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormClosing += MainForm_FormClosing;
 
             var layout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                Padding = new Padding(12),
+                Padding = new Padding(16),
                 ColumnCount = 1,
                 RowCount = 2
             };
@@ -33,55 +34,49 @@ namespace DataBackupTool.Forms
             {
                 Dock = DockStyle.Top,
                 AutoSize = true,
-                Padding = new Padding(0, 0, 0, 8)
+                Padding = new Padding(0, 0, 0, 12)
             };
 
-            this.buttonAddDestination = new Button { Text = "Thêm Destination", AutoSize = true, Margin = new Padding(0, 0, 8, 0) };
+            this.buttonAddDestination = new Button
+            {
+                Text = "+  Thêm destination",
+                AutoSize = true,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = System.Drawing.Color.FromArgb(44, 44, 42),
+                ForeColor = System.Drawing.Color.White,
+                Margin = new Padding(0, 0, 8, 0),
+                Padding = new Padding(6, 2, 6, 2)
+            };
+            this.buttonAddDestination.FlatAppearance.BorderSize = 0;
             this.buttonAddDestination.Click += buttonAddDestination_Click;
-            this.buttonEditDestination = new Button { Text = "Sửa", AutoSize = true, Margin = new Padding(0, 0, 8, 0) };
-            this.buttonEditDestination.Click += buttonEditDestination_Click;
-            this.buttonDeleteDestination = new Button { Text = "Xóa", AutoSize = true, Margin = new Padding(0, 0, 8, 0) };
-            this.buttonDeleteDestination.Click += buttonDeleteDestination_Click;
-            this.buttonRunSelected = new Button { Text = "Chạy ngay", AutoSize = true, Margin = new Padding(0, 0, 8, 0) };
-            this.buttonRunSelected.Click += buttonRunSelected_Click;
-            this.buttonViewLogs = new Button { Text = "Xem Log", AutoSize = true };
+
+            this.buttonViewLogs = new Button
+            {
+                Text = "Xem log",
+                AutoSize = true,
+                FlatStyle = FlatStyle.Flat,
+                Padding = new Padding(6, 2, 6, 2)
+            };
+            this.buttonViewLogs.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(224, 222, 217);
             this.buttonViewLogs.Click += buttonViewLogs_Click;
 
             buttonPanel.Controls.Add(this.buttonAddDestination);
-            buttonPanel.Controls.Add(this.buttonEditDestination);
-            buttonPanel.Controls.Add(this.buttonDeleteDestination);
-            buttonPanel.Controls.Add(this.buttonRunSelected);
             buttonPanel.Controls.Add(this.buttonViewLogs);
 
-            this.dataGridViewDestinations = new DataGridView
+            this.flowLayoutPanelCards = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                ReadOnly = true,
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                MultiSelect = false
+                AutoScroll = true,
+                BackColor = System.Drawing.Color.FromArgb(245, 245, 243)
             };
-            this.dataGridViewDestinations.CellDoubleClick += dataGridViewDestinations_CellDoubleClick;
-
-            this.dataGridViewDestinations.Columns.Add("Id", "Id");
-            this.dataGridViewDestinations.Columns.Add("Name", "Tên");
-            this.dataGridViewDestinations.Columns.Add("DestinationPath", "Đích");
-            this.dataGridViewDestinations.Columns.Add("SourceCount", "Số nguồn");
-            this.dataGridViewDestinations.Columns.Add("Mode", "Chế độ");
-            this.dataGridViewDestinations.Columns.Add("Schedule", "Lịch");
 
             layout.Controls.Add(buttonPanel, 0, 0);
-            layout.Controls.Add(this.dataGridViewDestinations, 0, 1);
+            layout.Controls.Add(this.flowLayoutPanelCards, 0, 1);
             this.Controls.Add(layout);
         }
 
         private Button buttonAddDestination = null!;
-        private Button buttonEditDestination = null!;
-        private Button buttonDeleteDestination = null!;
-        private Button buttonRunSelected = null!;
         private Button buttonViewLogs = null!;
-        private DataGridView dataGridViewDestinations = null!;
+        private FlowLayoutPanel flowLayoutPanelCards = null!;
     }
 }

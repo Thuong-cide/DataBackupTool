@@ -125,6 +125,9 @@ namespace DataBackupTool.Services
             }
 
             SaveManifest(manifestPath, newManifest);
+
+            RemoveEmptyDirectories(sourceRoot);
+            RemoveEmptyDirectories(destRoot);
         }
 
         private Dictionary<string, long> LoadManifest(string manifestPath)
@@ -149,6 +152,24 @@ namespace DataBackupTool.Services
         {
             var json = JsonSerializer.Serialize(manifest);
             File.WriteAllText(manifestPath, json);
+        }
+
+        private void RemoveEmptyDirectories(string rootPath)
+        {
+            if (!Directory.Exists(rootPath))
+            {
+                return;
+            }
+
+            foreach (var dir in Directory.GetDirectories(rootPath))
+            {
+                RemoveEmptyDirectories(dir);
+
+                if (!Directory.EnumerateFileSystemEntries(dir).Any())
+                {
+                    Directory.Delete(dir);
+                }
+            }
         }
 
         private string SanitizeSourceLabel(string sourceRoot)

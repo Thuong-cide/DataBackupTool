@@ -46,19 +46,46 @@ namespace DataBackupTool.Forms
 
         private void LoadDestinations()
         {
+            flowLayoutPanelCards.Controls.Clear();
             var destinations = _configService.GetAllDestinations();
-            dataGridViewDestinations.Rows.Clear();
 
             foreach (var destination in destinations)
             {
-                dataGridViewDestinations.Rows.Add(
-                    destination.Id,
-                    destination.Name,
-                    destination.DestinationPath,
-                    destination.SourcePaths.Count,
-                    destination.Mode,
-                    destination.IsScheduleEnabled ? $"{destination.ScheduleTime}" : "Off");
+                var card = new DestinationCard(destination);
+                card.RunClicked += RunDestination;
+                card.EditClicked += EditDestination;
+                card.DeleteClicked += DeleteDestination;
+                flowLayoutPanelCards.Controls.Add(card);
             }
+        }
+
+        private void RunDestination(BackupDestination destination)
+        {
+            _scheduler.RunNow(destination);
+            MessageBox.Show(this, "Đã chạy backup/sync cho destination đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void EditDestination(BackupDestination destination)
+        {
+            using var form = new DestinationEditForm(destination);
+            if (form.ShowDialog(this) == DialogResult.OK)
+            {
+                _configService.UpdateDestination(form.Destination);
+                _realtimeWatcher.StartWatching(_configService.GetAllDestinations());
+                LoadDestinations();
+            }
+        }
+
+        private void DeleteDestination(BackupDestination destination)
+        {
+            var confirm = MessageBox.Show(this, $"Xóa destination \"{destination.Name}\"? Hành động này không thể hoàn tác.",
+                "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes) return;
+
+            _configService.RemoveDestination(destination.Id);
+            _realtimeWatcher.StartWatching(_configService.GetAllDestinations());
+            LoadDestinations();
         }
 
         private void buttonAddDestination_Click(object sender, EventArgs e)
@@ -72,77 +99,10 @@ namespace DataBackupTool.Forms
             }
         }
 
-        private void buttonEditDestination_Click(object sender, EventArgs e)
-        {
-            if (dataGridViewDestinations.SelectedRows.Count == 0)
-            {
-                MessageBox.Show(this, "Vui lòng chọn một destination để sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            var selectedId = dataGridViewDestinations.SelectedRows[0].Cells[0].Value?.ToString();
-            var destination = _configService.GetAllDestinations().FirstOrDefault(d => d.Id == selectedId);
-            if (destination == null) return;
-
-            using var form = new DestinationEditForm(destination);
-            if (form.ShowDialog(this) == DialogResult.OK)
-            {
-                _configService.UpdateDestination(form.Destination);
-                _realtimeWatcher.StartWatching(_configService.GetAllDestinations());
-                LoadDestinations();
-            }
-        }
-
-        private void buttonDeleteDestination_Click(object sender, EventArgs e)
-        {
-            if (dataGridViewDestinations.SelectedRows.Count == 0)
-            {
-                MessageBox.Show(this, "Vui lòng chọn một destination để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            var selectedId = dataGridViewDestinations.SelectedRows[0].Cells[0].Value?.ToString();
-            var name = dataGridViewDestinations.SelectedRows[0].Cells[1].Value?.ToString();
-
-            var confirm = MessageBox.Show(this, $"Xóa destination \"{name}\"? Hành động này không thể hoàn tác.",
-                "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-            if (confirm != DialogResult.Yes || selectedId == null) return;
-
-            _configService.RemoveDestination(selectedId);
-            _realtimeWatcher.StartWatching(_configService.GetAllDestinations());
-            LoadDestinations();
-        }
-
-        private void buttonRunSelected_Click(object sender, EventArgs e)
-        {
-            if (dataGridViewDestinations.SelectedRows.Count == 0)
-            {
-                MessageBox.Show(this, "Vui lòng chọn một destination.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            var selectedId = dataGridViewDestinations.SelectedRows[0].Cells[0].Value?.ToString();
-            var destination = _configService.GetAllDestinations().FirstOrDefault(d => d.Id == selectedId);
-            if (destination == null)
-            {
-                return;
-            }
-
-            _scheduler.RunNow(destination);
-            MessageBox.Show(this, "Đã chạy backup/sync cho destination đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         private void buttonViewLogs_Click(object sender, EventArgs e)
         {
             using var form = new LogViewerForm();
             form.ShowDialog(this);
-        }
-
-        private void dataGridViewDestinations_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-            buttonEditDestination_Click(sender, EventArgs.Empty);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
